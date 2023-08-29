@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/street_classification_1.js"></script>
+        <script src="data/street_rating_2.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_ESRIGraylight_0');
+        map.getPane('pane_ESRIGraylight_0').style.zIndex = 400;
+        var layer_ESRIGraylight_0 = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_ESRIGraylight_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_ESRIGraylight_0;
+        map.addLayer(layer_ESRIGraylight_0);
+        function pop_street_classification_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Rating_B</th>\
+                        <td>' + (feature.properties['Rating_B'] !== null ? autolinker.link(feature.properties['Rating_B'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingWord</th>\
+                        <td>' + (feature.properties['RatingWord'] !== null ? autolinker.link(feature.properties['RatingWord'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingDate</th>\
+                        <td>' + (feature.properties['RatingDate'] !== null ? autolinker.link(feature.properties['RatingDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingFY_S</th>\
+                        <td>' + (feature.properties['RatingFY_S'] !== null ? autolinker.link(feature.properties['RatingFY_S'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Shape_len</th>\
+                        <td>' + (feature.properties['Shape_len'] !== null ? autolinker.link(feature.properties['Shape_len'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_street_classification_1_0(feature) {
+            switch(String(feature.properties['RatingWord'])) {
+                case 'GOOD':
+                    return {
+                pane: 'pane_street_classification_1',
+                opacity: 1,
+                color: 'rgba(91,186,1,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'FAIR':
+                    return {
+                pane: 'pane_street_classification_1',
+                opacity: 1,
+                color: 'rgba(247,252,102,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'POOR':
+                    return {
+                pane: 'pane_street_classification_1',
+                opacity: 1,
+                color: 'rgba(204,49,17,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_street_classification_1');
+        map.getPane('pane_street_classification_1').style.zIndex = 401;
+        map.getPane('pane_street_classification_1').style['mix-blend-mode'] = 'normal';
+        var layer_street_classification_1 = new L.geoJson(json_street_classification_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_street_classification_1',
+            layerName: 'layer_street_classification_1',
+            pane: 'pane_street_classification_1',
+            onEachFeature: pop_street_classification_1,
+            style: style_street_classification_1_0,
+        });
+        bounds_group.addLayer(layer_street_classification_1);
+        function pop_street_rating_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Rating_B</th>\
+                        <td>' + (feature.properties['Rating_B'] !== null ? autolinker.link(feature.properties['Rating_B'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingWord</th>\
+                        <td>' + (feature.properties['RatingWord'] !== null ? autolinker.link(feature.properties['RatingWord'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingDate</th>\
+                        <td>' + (feature.properties['RatingDate'] !== null ? autolinker.link(feature.properties['RatingDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingFY_S</th>\
+                        <td>' + (feature.properties['RatingFY_S'] !== null ? autolinker.link(feature.properties['RatingFY_S'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Shape_len</th>\
+                        <td>' + (feature.properties['Shape_len'] !== null ? autolinker.link(feature.properties['Shape_len'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_street_rating_2_0(feature) {
+            switch(String(feature.properties['Rating_B'])) {
+                case '0':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(247,251,255,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '1':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(228,239,249,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(209,226,243,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(186,214,235,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(154,200,224,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '6':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(115,178,216,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '7':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(82,157,204,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '8':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(53,133,191,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '9':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(29,108,177,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case '10':
+                    return {
+                pane: 'pane_street_rating_2',
+                opacity: 1,
+                color: 'rgba(8,81,156,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_street_rating_2');
+        map.getPane('pane_street_rating_2').style.zIndex = 402;
+        map.getPane('pane_street_rating_2').style['mix-blend-mode'] = 'normal';
+        var layer_street_rating_2 = new L.geoJson(json_street_rating_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_street_rating_2',
+            layerName: 'layer_street_rating_2',
+            pane: 'pane_street_rating_2',
+            onEachFeature: pop_street_rating_2,
+            style: style_street_rating_2_0,
+        });
+        bounds_group.addLayer(layer_street_rating_2);
+        map.addLayer(layer_street_rating_2);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'street_rating<br /><table><tr><td style="text-align: center;"><img src="legend/street_rating_2_00.png" /></td><td>0</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_11.png" /></td><td>1</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_22.png" /></td><td>2</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_33.png" /></td><td>3</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_54.png" /></td><td>5</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_65.png" /></td><td>6</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_76.png" /></td><td>7</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_87.png" /></td><td>8</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_98.png" /></td><td>9</td></tr><tr><td style="text-align: center;"><img src="legend/street_rating_2_109.png" /></td><td>10</td></tr></table>': layer_street_rating_2,'street_classification<br /><table><tr><td style="text-align: center;"><img src="legend/street_classification_1_GOOD0.png" /></td><td>GOOD</td></tr><tr><td style="text-align: center;"><img src="legend/street_classification_1_FAIR1.png" /></td><td>FAIR</td></tr><tr><td style="text-align: center;"><img src="legend/street_classification_1_POOR2.png" /></td><td>POOR</td></tr></table>': layer_street_classification_1,"ESRI Gray (light)": layer_ESRIGraylight_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Rating_B": "int","RatingWord": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Rating_B = document.createElement("div");
+            div_Rating_B.id = "div_Rating_B";
+            div_Rating_B.className = "slider";
+            document.getElementById("menu").appendChild(div_Rating_B);
+            var lab_Rating_B = document.createElement('div');
+            lab_Rating_B.innerHTML  = 'Rating_B: <span id="val_Rating_B"></span>';
+            lab_Rating_B.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_Rating_B);
+            var reset_Rating_B = document.createElement('div');
+            reset_Rating_B.innerHTML = 'clear filter';
+            reset_Rating_B.className = 'filterlabel';
+            lab_Rating_B.className = 'filterlabel';
+            reset_Rating_B.onclick = function() {
+                sel_Rating_B.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_Rating_B);
+            var sel_Rating_B = document.getElementById('div_Rating_B');
+            noUiSlider.create(sel_Rating_B, {
+                connect: true,
+                start: [0, 10],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 0,
+                max: 10
+                }
+            });
+            sel_Rating_B.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_Rating_B = document.getElementById('val_Rating_B');
+            val_Rating_B.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RatingWord = document.createElement('div');
+            div_RatingWord.id = "div_RatingWord";
+            div_RatingWord.className= "filterselect";
+            document.getElementById("menu").appendChild(div_RatingWord);
+            sel_RatingWord = document.createElement('select');
+            sel_RatingWord.multiple = true;
+            sel_RatingWord.size = 4;
+            sel_RatingWord.id = "sel_RatingWord";
+            var RatingWord_options_str = "<option value='' unselected></option>";
+            sel_RatingWord.onchange = function(){filterFunc()};
+            RatingWord_options_str  += '<option value="FAIR">FAIR</option>';
+            RatingWord_options_str  += '<option value="GOOD">GOOD</option>';
+            RatingWord_options_str  += '<option value="NR">NR</option>';
+            RatingWord_options_str  += '<option value="POOR">POOR</option>';
+            sel_RatingWord.innerHTML = RatingWord_options_str;
+            div_RatingWord.appendChild(sel_RatingWord);
+            var lab_RatingWord = document.createElement('div');
+            lab_RatingWord.innerHTML = 'RatingWord';
+            lab_RatingWord.className = 'filterlabel';
+            div_RatingWord.appendChild(lab_RatingWord);
+            var reset_RatingWord = document.createElement('div');
+            reset_RatingWord.innerHTML = 'clear filter';
+            reset_RatingWord.className = 'filterlabel';
+            reset_RatingWord.onclick = function() {
+                var options = document.getElementById("sel_RatingWord").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_RatingWord.appendChild(reset_RatingWord);
+        </script>
+    </body>
+</html>

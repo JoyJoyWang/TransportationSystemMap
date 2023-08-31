@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_ESRIGraylight_0');
+        map.getPane('pane_ESRIGraylight_0').style.zIndex = 400;
+        var layer_ESRIGraylight_0 = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_ESRIGraylight_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_ESRIGraylight_0;
+        map.addLayer(layer_ESRIGraylight_0);
+        map.createPane('pane_Sept7MD_1');
+        map.getPane('pane_Sept7MD_1').style.zIndex = 401;
+        var img_Sept7MD_1 = 'data/Sept7MD_1.png';
+        var img_bounds_Sept7MD_1 = [[40.52474714894806,-74.22717213148276],[40.92699155805381,-73.69051037952649]];
+        var layer_Sept7MD_1 = new L.imageOverlay(img_Sept7MD_1,
+                                              img_bounds_Sept7MD_1,
+                                              {pane: 'pane_Sept7MD_1'});
+        bounds_group.addLayer(layer_Sept7MD_1);
+        map.createPane('pane_Sept7PM_2');
+        map.getPane('pane_Sept7PM_2').style.zIndex = 402;
+        var img_Sept7PM_2 = 'data/Sept7PM_2.png';
+        var img_bounds_Sept7PM_2 = [[40.480507370970656,-74.28542041533092],[40.971026462149524,-73.63216436636709]];
+        var layer_Sept7PM_2 = new L.imageOverlay(img_Sept7PM_2,
+                                              img_bounds_Sept7PM_2,
+                                              {pane: 'pane_Sept7PM_2'});
+        bounds_group.addLayer(layer_Sept7PM_2);
+        map.createPane('pane_Sept7AM_3');
+        map.getPane('pane_Sept7AM_3').style.zIndex = 403;
+        var img_Sept7AM_3 = 'data/Sept7AM_3.png';
+        var img_bounds_Sept7AM_3 = [[40.542089626130476,-74.20430996617706],[40.90969187007615,-73.71337219864542]];
+        var layer_Sept7AM_3 = new L.imageOverlay(img_Sept7AM_3,
+                                              img_bounds_Sept7AM_3,
+                                              {pane: 'pane_Sept7AM_3'});
+        bounds_group.addLayer(layer_Sept7AM_3);
+        map.createPane('pane_May7MD_4');
+        map.getPane('pane_May7MD_4').style.zIndex = 404;
+        var img_May7MD_4 = 'data/May7MD_4.png';
+        var img_bounds_May7MD_4 = [[40.53070292480429,-74.21905312529253],[40.92084899493124,-73.69872381109053]];
+        var layer_May7MD_4 = new L.imageOverlay(img_May7MD_4,
+                                              img_bounds_May7MD_4,
+                                              {pane: 'pane_May7MD_4'});
+        bounds_group.addLayer(layer_May7MD_4);
+        map.createPane('pane_May7PM_5');
+        map.getPane('pane_May7PM_5').style.zIndex = 405;
+        var img_May7PM_5 = 'data/May7PM_5.png';
+        var img_bounds_May7PM_5 = [[40.49304711778924,-74.26889364875593],[40.95853839856147,-73.64870651546379]];
+        var layer_May7PM_5 = new L.imageOverlay(img_May7PM_5,
+                                              img_bounds_May7PM_5,
+                                              {pane: 'pane_May7PM_5'});
+        bounds_group.addLayer(layer_May7PM_5);
+        map.createPane('pane_May7AM_6');
+        map.getPane('pane_May7AM_6').style.zIndex = 406;
+        var img_May7AM_6 = 'data/May7AM_6.png';
+        var img_bounds_May7AM_6 = [[40.53733743092682,-74.2103807206562],[40.914286474071346,-73.70746943511648]];
+        var layer_May7AM_6 = new L.imageOverlay(img_May7AM_6,
+                                              img_bounds_May7AM_6,
+                                              {pane: 'pane_May7AM_6'});
+        bounds_group.addLayer(layer_May7AM_6);
+        map.addLayer(layer_May7AM_6);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{"May7 AM": layer_May7AM_6,"May7 PM": layer_May7PM_5,"May7 MD": layer_May7MD_4,"Sept7 AM": layer_Sept7AM_3,"Sept7 PM": layer_Sept7PM_2,"Sept7 MD": layer_Sept7MD_1,"ESRI Gray (light)": layer_ESRIGraylight_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        </script>
+    </body>
+</html>

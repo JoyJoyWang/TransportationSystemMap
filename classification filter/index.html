@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="mapbox/mapbox-gl.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="mapbox/mapbox-gl-generic-geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+            <nav id="menu"></nav>
+              <div id="distance" class="distance-container"></div>
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="./mapbox/mapbox-gl.js"></script>
+        <script src="mapbox/mapbox-gl-generic-geocoder.min.js"></script>
+        <script src="data/poorcondition_1.js"></script>
+        <script src="data/faircondition_2.js"></script>
+        <script src="data/goodcondition_3.js"></script>
+        <script src="data/goodcondition_4.js"></script>
+<script src="./mapbox/style.js"></script>
+<script src="./js/Autolinker.min.js"></script>
+<script>
+var map = new mapboxgl.Map({
+ container: 'map',
+ style: styleJSON,
+ center: [-74.06321290371135,40.61149706468859],
+ zoom: 10,
+ bearing: 360.0,
+ attributionControl: false
+});
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+map.addControl(new mapboxgl.AttributionControl({
+    customAttribution: '<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank">Mapbox GL JS</a> &middot; <a href="https://qgis.org" target="_blank">QGIS</a>',
+    compact: false
+}));
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+
+map.on('click', 'lyr_poorcondition_1_0', function (e) {
+    var description = '<table>\
+                    <tr>\
+                        <th scope="row">Rating_B</th>\
+                        <td>' + (e.features[0].properties['Rating_B'] !== null ? autolinker.link(e.features[0].properties['Rating_B'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingWord</th>\
+                        <td>' + (e.features[0].properties['RatingWord'] !== null ? autolinker.link(e.features[0].properties['RatingWord'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingDate</th>\
+                        <td>' + (e.features[0].properties['RatingDate'] !== null ? autolinker.link(e.features[0].properties['RatingDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingFY_S</th>\
+                        <td>' + (e.features[0].properties['RatingFY_S'] !== null ? autolinker.link(e.features[0].properties['RatingFY_S'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Shape_len</th>\
+                        <td>' + (e.features[0].properties['Shape_len'] !== null ? autolinker.link(e.features[0].properties['Shape_len'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>'
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(description)
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'lyr_poorcondition_1_0', function () {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'lyr_poorcondition_1_0', function () {
+    map.getCanvas().style.cursor = '';
+});
+map.on('click', 'lyr_faircondition_2_0', function (e) {
+    var description = '<table>\
+                    <tr>\
+                        <th scope="row">Rating_B</th>\
+                        <td>' + (e.features[0].properties['Rating_B'] !== null ? autolinker.link(e.features[0].properties['Rating_B'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingWord</th>\
+                        <td>' + (e.features[0].properties['RatingWord'] !== null ? autolinker.link(e.features[0].properties['RatingWord'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingDate</th>\
+                        <td>' + (e.features[0].properties['RatingDate'] !== null ? autolinker.link(e.features[0].properties['RatingDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingFY_S</th>\
+                        <td>' + (e.features[0].properties['RatingFY_S'] !== null ? autolinker.link(e.features[0].properties['RatingFY_S'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Shape_len</th>\
+                        <td>' + (e.features[0].properties['Shape_len'] !== null ? autolinker.link(e.features[0].properties['Shape_len'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>'
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(description)
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'lyr_faircondition_2_0', function () {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'lyr_faircondition_2_0', function () {
+    map.getCanvas().style.cursor = '';
+});
+map.on('click', 'lyr_goodcondition_3_0', function (e) {
+    var description = '<table>\
+                    <tr>\
+                        <th scope="row">Rating_B</th>\
+                        <td>' + (e.features[0].properties['Rating_B'] !== null ? autolinker.link(e.features[0].properties['Rating_B'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingWord</th>\
+                        <td>' + (e.features[0].properties['RatingWord'] !== null ? autolinker.link(e.features[0].properties['RatingWord'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingDate</th>\
+                        <td>' + (e.features[0].properties['RatingDate'] !== null ? autolinker.link(e.features[0].properties['RatingDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RatingFY_S</th>\
+                        <td>' + (e.features[0].properties['RatingFY_S'] !== null ? autolinker.link(e.features[0].properties['RatingFY_S'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Shape_len</th>\
+                        <td>' + (e.features[0].properties['Shape_len'] !== null ? autolinker.link(e.features[0].properties['Shape_len'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>'
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(description)
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'lyr_goodcondition_3_0', function () {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'lyr_goodcondition_3_0', function () {
+    map.getCanvas().style.cursor = '';
+});
+map.on('click', 'lyr_goodcondition_4_0', function (e) {
+    var description = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['Rating_B'] !== null ? autolinker.link(e.features[0].properties['Rating_B'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['RatingWord'] !== null ? autolinker.link(e.features[0].properties['RatingWord'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['RatingDate'] !== null ? autolinker.link(e.features[0].properties['RatingDate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['RatingFY_S'] !== null ? autolinker.link(e.features[0].properties['RatingFY_S'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['Shape_len'] !== null ? autolinker.link(e.features[0].properties['Shape_len'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>'
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(description)
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'lyr_goodcondition_4_0', function () {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'lyr_goodcondition_4_0', function () {
+    map.getCanvas().style.cursor = '';
+});
+    var toggleableLayerIds = ['lyr_goodcondition_4_0', 'good condition  复制','lyr_goodcondition_3_0', 'good condition','lyr_faircondition_2_0', 'fair condition','lyr_poorcondition_1_0', 'poor condition','lyr_ESRIGraylight_0_0', 'ESRI Gray (light)'];
+
+    for (var i = 0; i < toggleableLayerIds.length; i=i+2) {
+        var id = toggleableLayerIds[i];
+        var layerName = toggleableLayerIds[i+1]
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.layer = id;
+        link.textContent = layerName;
+
+        link.onclick = function (e) {
+            var clickedLayer = this.layer;
+            e.preventDefault();
+            e.stopPropagation();
+
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+            if (typeof visibility === 'undefined' || visibility == 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }
+        var geocodeNominatimRequest = function(query, mapBounds, options) {
+        var params = { format: "json", q: query, limit: options.limit };
+        var urlParams = new URLSearchParams(Object.entries(params));
+
+        return fetch("http://nominatim.openstreetmap.org/search?" + urlParams)
+            .then(function(response) {
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    return [];
+                }
+            }).then(function(json) {
+                return json.map(function(result) {
+                    return {
+                        name: result.display_name,
+                        lat: result.lat,
+                        lon: result.lon,
+                        bbox: [result.boundingbox[2], result.boundingbox[0],
+                               result.boundingbox[3], result.boundingbox[1]]
+                    };
+                });
+            });
+        };
+
+        map.addControl(new MapboxGenericGeocoder({}, geocodeNominatimRequest));
+</script>
+        <script>
+        map.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            })
+        );
+        </script>
+    </body>
+</html>

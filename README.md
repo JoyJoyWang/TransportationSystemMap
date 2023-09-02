@@ -1,2 +1,3 @@
 # TransportationSystemMap
-<iframe src="https://storymaps.arcgis.com/stories/1c00859136694644b62a702b27d59b07?header" width="100%" height="500px" frameborder="0" allowfullscreen allow="geolocation"></iframe>
+The project visualizes streets and nodes in New York City to form a series of interactive maps, including heatmaps and changes over time.
+[Click to see the final result](https://storymaps.arcgis.com/stories/1c00859136694644b62a702b27d59b07)
